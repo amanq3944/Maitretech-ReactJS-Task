@@ -13,11 +13,11 @@ const Menu = () => {
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-            const token = localStorage.getItem('token')
-            if (!token) {
-                navigate('/login')
-            }
-        }, [navigate])
+        const token = localStorage.getItem('token')
+        if (!token) {
+            navigate('/login')
+        }
+    }, [navigate])
 
     const items = [
         { id: 1, name: "Hamburger", price: 200, img: "https://raw.githubusercontent.com/punitdiwan/codeing-challenge/refs/heads/main/assets/burger.jpeg" },
@@ -73,43 +73,44 @@ const Menu = () => {
                 </div>
                 <IconButton aria-label="cart" onClick={() => setOpen(true)}>
                     <StyledBadge badgeContent={totalItems} color="secondary">
-                        <FaShoppingCart size={22} className="text-black" />
+                        <FaShoppingCart size={22} className="text-white" />
                     </StyledBadge>
                 </IconButton>
+
             </nav>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 justify-items-center mt-28 px-20">
-    {items.map((item) => (
-        <div
-            key={item.id}
-            className="border border-gray-200 shadow-lg rounded-lg w-70 hover:scale-105 transition-transform bg-white"
-        >
-            <img
-                className="w-full h-44 object-cover rounded-t-lg"
-                src={item.img}
-                alt={item.name}
-            />
-            <div className="p-4 space-y-2">
-                <h1 className="text-lg font-semibold">{item.name}</h1>
-                <p className="text-gray-600">Price: ₹{item.price}</p>
-                <div className="flex gap-3">
-                    <button
-                        onClick={() => handleAdd(item)}
-                        className="bg-blue-800 text-white w-12 h-10 rounded text-xl"
+                {items.map((item) => (
+                    <div
+                        key={item.id}
+                        className="border border-gray-200 shadow-lg rounded-lg w-70 hover:scale-105 transition-transform bg-white"
                     >
-                        +
-                    </button>
-                    <button
-                        onClick={() => handleRemove(item)}
-                        className="bg-gray-500 text-white w-12 h-10 rounded text-xl"
-                    >
-                        −
-                    </button>
-                </div>
+                        <img
+                            className="w-full h-44 object-cover rounded-t-lg"
+                            src={item.img}
+                            alt={item.name}
+                        />
+                        <div className="p-4 space-y-2">
+                            <h1 className="text-lg font-semibold">{item.name}</h1>
+                            <p className="text-gray-600">Price: ₹{item.price}</p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => handleAdd(item)}
+                                    className="bg-blue-800 text-white w-12 h-10 rounded text-xl"
+                                >
+                                    +
+                                </button>
+                                <button
+                                    onClick={() => handleRemove(item)}
+                                    className="bg-gray-500 text-white w-12 h-10 rounded text-xl"
+                                >
+                                    −
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
-        </div>
-    ))}
-</div>
 
 
             <Dialog
