@@ -5,12 +5,24 @@ import IconButton from "@mui/material/IconButton";
 import { FaShoppingCart } from "react-icons/fa";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { VscListSelection } from "react-icons/vsc";
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
 
-const Menu = () => {
+const Menus = () => {
 
     const navigate = useNavigate()
     const [cart, setCart] = useState({});
-    const [open, setOpen] = useState(false);
+    const [opens, setOpen] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -60,6 +72,20 @@ const Menu = () => {
     const totalItems = Object.values(cart).reduce((acc, item) => acc + item.quantity, 0);
     const totalPrice = Object.values(cart).reduce((acc, item) => acc + item.price * item.quantity, 0);
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token')
+        navigate('/login')
+    }
+
     return (
         <div className="font-sans">
             <nav className="bg-blue-800 text-white w-full flex justify-between items-center px-10 py-4 fixed top-0 shadow-xl z-10">
@@ -71,12 +97,16 @@ const Menu = () => {
                     />
                     <h1 className="text-2xl font-semibold">Food's Restaurant</h1>
                 </div>
-                <IconButton aria-label="cart" onClick={() => setOpen(true)}>
-                    <StyledBadge badgeContent={totalItems} color="secondary">
-                        <FaShoppingCart size={22} className="text-white" />
-                    </StyledBadge>
-                </IconButton>
-
+                <div className="flex items-center justify-center gap-6">
+                    <IconButton aria-label="cart" onClick={() => setOpen(true)}>
+                        <StyledBadge badgeContent={totalItems} color="secondary">
+                            <FaShoppingCart size={22} className="text-white" />
+                        </StyledBadge>
+                    </IconButton>
+                    <div>
+                        <VscListSelection onClick={handleClick} className="text-2xl cursor-pointer" />
+                    </div>
+                </div>
             </nav>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 justify-items-center mt-28 px-20">
@@ -114,7 +144,7 @@ const Menu = () => {
 
 
             <Dialog
-                open={open}
+                open={opens}
                 onClose={() => setOpen(false)}
                 PaperProps={{
                     className: "rounded-lg shadow-lg w-[95%] sm:w-[500px] bg-white p-4 sm:p-6",
@@ -181,8 +211,73 @@ const Menu = () => {
                 </DialogActions>
             </Dialog>
 
+            <React.Fragment>
+                <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    slotProps={{
+                        paper: {
+                            elevation: 0,
+                            sx: {
+                                overflow: 'visible',
+                                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                mt: 1.5,
+                                '& .MuiAvatar-root': {
+                                    width: 32,
+                                    height: 32,
+                                    ml: -0.5,
+                                    mr: 1,
+                                },
+                                '&::before': {
+                                    content: '""',
+                                    display: 'block',
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 14,
+                                    width: 10,
+                                    height: 10,
+                                    bgcolor: 'background.paper',
+                                    transform: 'translateY(-50%) rotate(45deg)',
+                                    zIndex: 0,
+                                },
+                            },
+                        },
+                    }}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                    <MenuItem onClick={handleClose}>
+                        <Avatar /> Profile
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                        <Avatar /> My account
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={handleClose}>
+                        <ListItemIcon>
+                            <PersonAdd fontSize="small" />
+                        </ListItemIcon>
+                        Add another account
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                        <ListItemIcon>
+                            <Settings fontSize="small" />
+                        </ListItemIcon>
+                        Settings
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout}>
+                        <ListItemIcon>
+                            <Logout fontSize="small" />
+                        </ListItemIcon>
+                        Logout
+                    </MenuItem>
+                </Menu>
+            </React.Fragment>
         </div>
     );
 };
 
-export default Menu;
+export default Menus;

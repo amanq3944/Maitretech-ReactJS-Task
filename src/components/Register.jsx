@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import toast, { Toaster } from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate()
@@ -10,42 +11,45 @@ const Register = () => {
 
   // Handle register form submit
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const response = await fetch("http://localhost:5000/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          fname,
-          password,
-        }),
-      });
+  try {
+    const response = await fetch("http://localhost:5000/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, fname, password }),
+    });
 
+    const data = await response.json();
+    console.log("Register response:", data);
 
-      const data = await response.json();
-      console.log("Register response:", data);
-
-      if (response.ok) {
-        alert("User registered successfully!");
-        // Save token (optional)
+    if (response.ok) {
+      // ✅ Optional: Save token only if it exists
+      if (data.token) {
         localStorage.setItem("token", data.token);
-        navigate("/login");
-      } else {
-        alert(data.message || "Registration failed");
       }
-    } catch (error) {
-      console.error("Error:", error.message);
-      alert("Something went wrong while registering");
-    }
 
+      toast.success("User registered successfully!");
+      
+      // ✅ Clear form fields
+      setFname("");
+      setUsername("");
+      setPassword("");
+
+      // ✅ Redirect after short delay
+      setTimeout(() => navigate("/login"), 1000);
+    } else {
+      toast.error(data.message || "Registration failed");
+    }
+  } catch (error) {
+    console.error("Error:", error.message);
+    toast.error("Something went wrong while registering");
+  } finally {
     setLoading(false);
-    setFname('');
-    setUsername('');
-    setPassword('');
-  };
+  }
+};
+
 
   return (
     <div className='flex flex-col justify-center items-center w-full min-h-screen'>
